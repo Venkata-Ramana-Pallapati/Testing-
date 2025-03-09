@@ -1,5 +1,6 @@
 *.so
 *.so.*
+<<<<<<< HEAD
 
 __pycache__/
 node_modules/
@@ -9,3 +10,9 @@ venv/
 .env
 __pycache__/
 Demo/env/
+=======
+Demo/env/
+__pycache__/
+node_modules/
+*.log
+>>>>>>> d8121fb2a (app)
