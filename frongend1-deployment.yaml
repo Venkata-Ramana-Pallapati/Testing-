@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend2
+  template:
+    metadata:
+      labels:
+        app: frontend2
+    spec:
+      containers:
+      - name: frontend2
+        image: venkat345/ramana1:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent # or Always
+        env:
+        - name: BACKEND_SERVICE_URL
+          value: "http://backend-service:8080"
