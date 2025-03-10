@@ -8,3 +8,4 @@ project/.envnode_modules/
 venv/
 .env
 __pycache__/
+Demo/env/
