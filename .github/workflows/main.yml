@@ -57,7 +57,7 @@ jobs:
         run: |
           echo "Waiting for backend IP..."
           for i in {1..10}; do
-            BACKEND_IP=$(kubectl get svc venkat-backend-service -n backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            BACKEND_IP=$(kubectl get svc Ramana-backend-service -n backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
             if [[ ! -z "$BACKEND_IP" ]]; then
               echo "Backend IP is $BACKEND_IP"
               echo "BACKEND_IP=$BACKEND_IP" >> $GITHUB_ENV
