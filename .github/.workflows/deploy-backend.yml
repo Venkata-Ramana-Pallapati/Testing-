@@ -1,0 +1,70 @@
+name: Deploy Backend to AKS
+
+on:
+  push:
+    branches:
+      - main  # Change this if needed
+
+jobs:
+  build-and-push:
+    name: Build and Push Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Backend Docker Image
+        run: |
+          cd Demo  # Change directory to where the Dockerfile is
+          docker build -t my-backend:latest .
+          docker tag my-backend:latest ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
+
+      - name: Push Backend Docker Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
+
+  deploy-to-aks:
+    name: Deploy to AKS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials --resource-group ${{ secrets.AZURE_RG }} --name ${{ secrets.AKS_CLUSTER }}
+
+      - name: Create Namespace if not exists
+        run: |
+          kubectl get namespace backend || kubectl create namespace backend
+
+      - name: Apply Kubernetes Manifests
+        run: |
+          kubectl apply -f manifests/backend-deployment.yaml
+          kubectl apply -f manifests/backend-service.yaml
+
+      - name: Wait for Backend IP
+        run: |
+          echo "Waiting for backend IP..."
+          for i in {1..10}; do
+            BACKEND_IP=$(kubectl get svc backend-service -n backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            if [[ ! -z "$BACKEND_IP" ]]; then
+              echo "Backend IP is $BACKEND_IP"
+              echo "BACKEND_IP=$BACKEND_IP" >> $GITHUB_ENV
+              break
+            fi
+            sleep 10
+          done
+
+    outputs:
+      backend_ip: ${{ env.BACKEND_IP }}
