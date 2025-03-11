@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: venkat-backend-service
+  name: Ramana-backend-service
   namespace: backend
 spec:
   type: LoadBalancer
