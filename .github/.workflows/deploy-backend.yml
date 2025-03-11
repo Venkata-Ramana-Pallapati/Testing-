@@ -51,7 +51,7 @@ jobs:
       - name: Apply Kubernetes Manifests
         run: |
           kubectl apply -f manifests/backend-deployment.yaml
-          kubectl apply -f manifests/backend-service.yaml
+          kubectl apply -f manifests/backend-service.yaml  
 
       - name: Wait for Backend IP
         run: |
