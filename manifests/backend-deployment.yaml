@@ -1,21 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment1
+  name: frontend-deployment10
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: frontend
   template:
     metadata:
       labels:
-        app: backend
+        app: frontend
     spec:
       containers:
-      - name: backend
-        image: venkat345//my-backend:latest
+      - name: frontend
+        image: venkat345/my-frontend1:latest
         ports:
-        - containerPort: 8000
-        imagePullPolicy: IfNotPresent # or Always
-
+        - containerPort: 80
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - configMapRef:
+            name: backend-config  # Reference the ConfigMap storing the backend IP
