@@ -50,5 +50,6 @@ jobs:
 
       - name: Apply Kubernetes Manifests
         run: |
-          kubectl apply -f manifests/backend-deployment.yaml
-          kubectl apply -f manifests/backend-service.yaml
+          cd manifests # change di
+          kubectl apply -f backend-deployment.yaml
+          kubectl apply -f backend-service.yaml
