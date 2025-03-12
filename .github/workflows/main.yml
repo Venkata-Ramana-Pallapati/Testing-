@@ -71,7 +71,7 @@ jobs:
         if: failure()
         run: |
           echo "Deployment failed. Rolling back..."
-          kubectl rollout undo deployment backend -n frontend
-          kubectl rollout undo deployment frontend -n frontend
+          kubectl rollout undo deployment backend-deployment1 -n frontend
+          kubectl rollout undo deployment frontend-deployment9 -n frontend
 
      
