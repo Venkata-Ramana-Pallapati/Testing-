@@ -26,6 +26,17 @@ jobs:
       - name: Push Backend Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
+
+      - name: Build frontend Docker Image
+        run: |
+          cd Frontend  # Change directory to where the Dockerfile is
+          docker build -t my-frontend:latest .
+          docker tag my-frontend:latest ${{ secrets.DOCKER_USERNAME }}/my-fronetend:latest
+
+      - name: Push Backend Docker Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
+
+
   deploy-to-aks:
     name: Deploy to AKS
     needs: build-and-push
