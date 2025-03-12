@@ -20,11 +20,10 @@ jobs:
       - name: Build Backend Docker Image
         run: |
           cd Demo  # Change directory to where the Dockerfile is
-          docker build -t my-backend:latest .
-          docker tag my-backend:latest ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
-
+          docker build -t my-backend1:latest .
+          docker tag my-backend1:latest ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
       - name: Push Backend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
 
 
       - name: Build frontend Docker Image
@@ -32,7 +31,6 @@ jobs:
           cd Frontend  # Change directory to where the Dockerfile is
           docker build -t my-frontend1:latest .
           docker tag my-frontend1:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend1:latest
-
       - name: Push frontend Docker Image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend1:latest
 
@@ -54,28 +52,23 @@ jobs:
       - name: Get AKS Credentials
         run: |
           az aks get-credentials --resource-group ${{ secrets.AZURE_RG }} --name ${{ secrets.AKS_CLUSTER }}
-
       - name: Create Namespace if not exists
         run: |
           kubectl get namespace frontend || kubectl create namespace frontend
-
       - name: Apply Kubernetes Manifests
         run: |
           cd manifests
-          kubectl apply -f backend-deployment.yaml -n backend
-          kubectl apply -f backend-service.yaml -n backend
-
+          kubectl apply -f backend-deployment.yaml
+          kubectl apply -f backend-service.yaml
       - name: Wait for LoadBalancer IP
         run: |
           echo "Waiting for backend LoadBalancer to be assigned an external IP..."
           sleep 30  # Give time for IP assignment
-          export BACKEND_IP=$(kubectl get svc backend-ser1 -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          export BACKEND_IP=$(kubectl get svc backend-ser -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo "Backend IP is $BACKEND_IP"
           echo "VITE_BACKEND_URL=http://${BACKEND_IP}:8000" > Frontend/.env
       - name : apply kubernets for fronetnd
         run: |
           cd manifests
-          kubectl apply -f frontend-deployment.yaml -n backend 
-          kubectl apply -f frontend-service.yaml -n backend
-     
-     
+          kubectl apply -f frontend-deployment.yaml
+          kubectl apply -f frontend-service.yaml
