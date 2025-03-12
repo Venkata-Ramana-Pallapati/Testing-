@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment10
-spec:
+  name: backend-deployment1
   replicas: 1
   selector:
     matchLabels:

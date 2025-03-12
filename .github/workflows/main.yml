@@ -20,19 +20,19 @@ jobs:
       - name: Build Backend Docker Image
         run: |
           cd Demo  # Change directory to where the Dockerfile is
-          docker build -t my-backend1:latest .
-          docker tag my-backend1:latest ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
+          docker build -t my-backend:latest .
+          docker tag my-backend:latest ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
       - name: Push Backend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
 
       - name: Build frontend Docker Image
         run: |
           cd Frontend  # Change directory to where the Dockerfile is
-          docker build -t my-frontend1:latest .
-          docker tag my-frontend1:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend1:latest
+          docker build -t my-frontend:latest .
+          docker tag my-frontend:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
       - name: Push frontend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend1:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
 
 
   deploy-to-aks:
@@ -58,20 +58,22 @@ jobs:
       - name: Apply Kubernetes Manifests
         run: |
           cd manifests
-          kubectl apply -f backend-deployment.yaml -n backend
-          kubectl apply -f backend-service.yaml -n backend
+          kubectl apply -f backend-deployment.yaml
+          kubectl apply -f backend-service.yaml
       - name: Wait for LoadBalancer IP
         run: |
           echo "Waiting for backend LoadBalancer to be assigned an external IP..."
-          sleep 30  # Wait for IP assignment
-          export BACKEND_IP=$(kubectl get svc backend-ser -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          sleep 30  # Give time for IP assignment
+          export BACKEND_IP=$(kubectl get svc backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo "Backend IP is $BACKEND_IP"
-          
-           echo "VITE_BACKEND_URL=http://${BACKEND_IP}:8000" > Frontend/.env
-           cat Frontend/.env
-
+          echo "VITE_BACKEND_URL=http://${BACKEND_IP}:8000" > Frontend/.env
       - name : apply kubernets for fronetnd
         run: |
-          cd manifests
-          kubectl apply -f frontend-deployment.yaml -n backend 
-          kubectl apply -f frontend-service.yaml -n backend
+          kubectl apply -f frontend-deployment.yaml
+          kubectl apply -f frontend-service.yaml
+      - name: Rollback on Failure
+        if: failure()
+        run: |
+          echo "Deployment failed. Rolling back..."
+          kubectl rollout undo deployment backend-deployment1 -n default
+          kubectl rollout undo deployment frontend-deployment9 -n default
