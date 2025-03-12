@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service3
+  name: frontend-ser
 spec:
   type: LoadBalancer
   selector:
