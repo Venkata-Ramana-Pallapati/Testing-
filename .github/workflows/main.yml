@@ -67,12 +67,8 @@ jobs:
           export BACKEND_IP=$(kubectl get svc backend-ser -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo "Backend IP is $BACKEND_IP"
           
-          # Create or update ConfigMap with Backend IP
-          kubectl delete configmap backend-config --ignore-not-found
-          kubectl create configmap backend-config --from-literal=VITE_BACKEND_URL="http://${BACKEND_IP}:8000"
-          
-          echo "ConfigMap 'backend-config' created with BACKEND_IP=${BACKEND_IP}"
-
+           echo "VITE_BACKEND_URL=http://${BACKEND_IP}:8000" > Frontend/.env
+           cat Frontend/.env
 
       - name : apply kubernets for fronetnd
         run: |
