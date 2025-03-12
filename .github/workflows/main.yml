@@ -46,25 +46,9 @@ jobs:
 
       - name: Create Namespace if not exists
         run: |
-          kubectl get namespace backend || kubectl create namespace backend
+          kubectl get namespace frontend || kubectl create namespace frontend
 
       - name: Apply Kubernetes Manifests
         run: |
           kubectl apply -f manifests/backend-deployment.yaml
-          kubectl apply -f manifests/backend-service.yaml  
-
-      - name: Wait for Backend IP
-        run: |
-          echo "Waiting for backend IP..."
-          for i in {1..10}; do
-            BACKEND_IP=$(kubectl get svc ramana-backend-service -n backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-            if [[ ! -z "$BACKEND_IP" ]]; then
-              echo "Backend IP is $BACKEND_IP"
-              echo "BACKEND_IP=$BACKEND_IP" >> $GITHUB_ENV
-              break
-            fi
-            sleep 10
-          done
-
-    outputs:
-      backend_ip: ${{ env.BACKEND_IP }}
+          kubectl apply -f manifests/backend-service.yaml
