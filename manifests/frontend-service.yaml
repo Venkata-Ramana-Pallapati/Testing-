@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend--gang
+  name: frontend-gang
 spec:
   type: LoadBalancer
   selector:
