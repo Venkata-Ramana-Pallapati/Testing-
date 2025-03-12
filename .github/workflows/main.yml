@@ -69,7 +69,7 @@ jobs:
         run: |
           echo "Waiting for backend LoadBalancer to be assigned an external IP..."
           sleep 30  # Give time for IP assignment
-          export BACKEND_IP=$(kubectl get svc backend-ser -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          export BACKEND_IP=$(kubectl get svc backend-ser1 -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
           echo "Backend IP is $BACKEND_IP"
           echo "VITE_BACKEND_URL=http://${BACKEND_IP}:8000" > Frontend/.env
       - name : apply kubernets for fronetnd
