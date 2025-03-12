@@ -20,11 +20,11 @@ jobs:
       - name: Build Backend Docker Image
         run: |
           cd Demo  # Change directory to where the Dockerfile is
-          docker build -t my-backend1:latest .
-          docker tag my-backend1:latest ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
+          docker build -t my-backend:latest .
+          docker tag my-backend:latest ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
       - name: Push Backend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend1:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
 
       - name: Build frontend Docker Image
