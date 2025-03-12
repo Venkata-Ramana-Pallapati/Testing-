@@ -13,7 +13,7 @@ metadata:
     spec:
       containers:
       - name: frontend
-        image: venkat345/my-frontend1:latest
+        image: venkat345/my-backend:latest
         ports:
         - containerPort: 80
         imagePullPolicy: IfNotPresent
