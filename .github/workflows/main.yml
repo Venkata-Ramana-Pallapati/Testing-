@@ -62,8 +62,8 @@ jobs:
       - name: Apply Kubernetes Manifests
         run: |
           cd manifests
-          kubectl apply -f backend-deployment.yaml
-          kubectl apply -f backend-service.yaml
+          kubectl apply -f backend-deployment.yaml -n backend
+          kubectl apply -f backend-service.yaml -n backend
 
       - name: Wait for LoadBalancer IP
         run: |
@@ -75,7 +75,7 @@ jobs:
       - name : apply kubernets for fronetnd
         run: |
           cd manifests
-          kubectl apply -f frontend-deployment.yaml
-          kubectl apply -f frontend-service.yaml
+          kubectl apply -f frontend-deployment.yaml -n backend 
+          kubectl apply -f frontend-service.yaml -n backend
      
      
