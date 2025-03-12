@@ -7,7 +7,6 @@ spec:
   selector:
     app: frontend
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-
+    - protocol: TCP
+      port: 81          # Change this to 81
+      targetPort: 80    # This should match the container's port
