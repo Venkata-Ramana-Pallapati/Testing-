@@ -17,4 +17,4 @@ spec:
       - name: backend
         image: ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
         ports:
-        - containerPort: 80001
+        - containerPort: 8001
