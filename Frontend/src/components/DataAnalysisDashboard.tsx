@@ -114,7 +114,7 @@ const TimeseriesPredictionChart: React.FC = () => {
   
     try {
      
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      const API_BASE_URL = import.meta.env.VITE_BACKEND_URL; // Dynamically set backend IP with port 8000
       console.log("API Base URL:", API_BASE_URL);
       
       
