@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment10
+  name: frontend-deployment
 spec:
   replicas: 1
   selector:
@@ -17,4 +17,9 @@ spec:
         image: venkat345/my-frontend1:latest
         ports:
         - containerPort: 80
-        imagePullPolicy: IfNotPresent # or Always
+        env:
+        - name: VITE_BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: VITE_BACKEND_URL
