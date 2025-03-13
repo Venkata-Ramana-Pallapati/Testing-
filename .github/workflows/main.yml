@@ -26,14 +26,6 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
 
-      - name: Build frontend Docker Image
-        run: |
-          cd Frontend  # Change directory to where the Dockerfile is
-          docker build -t my-frontend:latest .
-          docker tag my-frontend:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
-      - name: Push frontend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
-
 
   deploy-to-aks:
     name: Deploy to AKS
@@ -62,19 +54,24 @@ jobs:
           kubectl apply -f backend-service.yaml
       - name: Wait for LoadBalancer IP
         run: |
-         echo "Waiting for backend LoadBalancer to be assigned an external IP..."
-         sleep 30  # Give time for IP assignment
+          echo "Waiting for backend LoadBalancer to be assigned an external IP..."
+          sleep 30  # Allow time for IP assignment
 
-         # Get the correct external IP
-         export BACKEND_IP=$(kubectl get svc backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          # Get the correct external IP
+          export BACKEND_IP=$(kubectl get svc backend-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          echo "Backend IP is $BACKEND_IP"
 
-         echo "Backend IP is $BACKEND_IP"
+          # Ensure it is correctly stored in the Frontend .env file
+          echo "VITE_BACKEND_URL=http://$BACKEND_IP:8000" > Frontend/.env
 
-         # Ensure it is correctly stored in the Frontend .env file
-         echo "VITE_BACKEND_URL=http://$BACKEND_IP:8000" > Frontend/.env
+          cat Frontend/.env  # Debugging step to verify the value
 
-         cat Frontend/.env  # Debugging step to verify the value
-        
+      - name: Rebuild Frontend Docker Image with Updated Backend URL
+        run: |
+          cd Frontend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
+
 
       
       - name : apply kubernets for fronetnd
