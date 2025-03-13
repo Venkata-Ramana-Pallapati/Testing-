@@ -84,7 +84,7 @@ jobs:
           docker build -t my-frontend0:latest .
           docker tag my-frontend0:latest venkat345/my-frontend0:latest
       - name: Push frontend Docker Image to Docker Hub
-        run: docker push venakt345/my-frontend0:latest
+        run: docker push venkat345/my-frontend0:latest
 
 
 
