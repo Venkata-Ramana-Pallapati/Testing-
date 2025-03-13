@@ -82,9 +82,9 @@ jobs:
         run: |
           cd Frontend  # Change directory to where the Dockerfile is
           docker build -t my-frontend0:latest .
-          docker tag my-frontend0:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
+          docker tag my-frontend0:latest venkat345/my-frontend0:latest
       - name: Push frontend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
+        run: docker push venakt345/my-frontend0:latest
 
 
 
