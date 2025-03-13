@@ -76,10 +76,7 @@ jobs:
          cat Frontend/.env  # Debugging step to verify the value
         
 
-      - name: Deploy Frontend to Kubernetes
-        run: |
-          kubectl rollout restart deployment frontend-deployment0
-
+      
       - name : apply kubernets for fronetnd
         run: |
           cd manifests
