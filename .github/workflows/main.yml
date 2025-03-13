@@ -26,7 +26,13 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
 
 
-     
+      - name: Build frontend Docker Image
+        run: |
+          cd Frontend  # Change directory to where the Dockerfile is
+          docker build -t my-frontend0:latest .
+          docker tag my-frontend0:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
+      - name: Push frontend Docker Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
 
 
   deploy-to-aks:
@@ -68,13 +74,15 @@ jobs:
 
           cat Frontend/.env  # Debugging step to verify the value
 
-      - name: Build frontend Docker Image
+      - name:  RE Build frontend Docker Image
         run: |
           cd Frontend  # Change directory to where the Dockerfile is
-          docker build -t my-frontend:latest .
-          docker tag my-frontend:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
+          docker build -t my-frontend0:latest .
+          docker tag my-frontend0:latest ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
       - name: Push frontend Docker Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/my-frontend0:latest
+
+
 
       
       - name : apply kubernets for fronetnd
