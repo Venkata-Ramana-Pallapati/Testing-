@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment0
+  name: frontend-deployment90
 spec:
   replicas: 1
   selector:
@@ -17,9 +17,4 @@ spec:
         image: venkat345/my-frontend0:latest
         ports:
         - containerPort: 80
-        env:
-        - name: VITE_BACKEND_URL
-          valueFrom:
-            configMapKeyRef:
-              name: backend-config
-              key: VITE_BACKEND_URL
+        
